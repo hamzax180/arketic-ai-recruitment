@@ -24,7 +24,11 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel('gemini-2.5-flash')
+    try:
+        model = genai.GenerativeModel('gemini-2.0-flash')
+    except Exception as e:
+        print(f"Error initializing Gemini: {e}")
+        model = None
 else:
     model = None
 
@@ -36,10 +40,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-from mangum import Mangum
-
 app = FastAPI(title="arketic.ai backend")
-handler = Mangum(app)
 
 app.add_middleware(
     CORSMiddleware,
