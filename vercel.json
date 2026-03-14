@@ -21,6 +21,14 @@
       "dest": "backend/main.py"
     },
     {
+      "src": "/signup",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/me",
+      "dest": "backend/main.py"
+    },
+    {
       "src": "/jobs",
       "dest": "backend/main.py"
     },
