@@ -36,7 +36,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+from mangum import Mangum
+
 app = FastAPI(title="arketic.ai backend")
+handler = Mangum(app)
 
 app.add_middleware(
     CORSMiddleware,
