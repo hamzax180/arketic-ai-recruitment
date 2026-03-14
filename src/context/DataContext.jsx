@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext';
 
 const DataContext = createContext();
 
-const API_URL = 'http://localhost:8001';
+export const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : '/api';
 
 export function DataProvider({ children }) {
   const { token, user } = useAuth();

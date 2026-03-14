@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
+const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : '/api';
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('arketic_token'));
@@ -11,7 +13,7 @@ export function AuthProvider({ children }) {
     const fetchMe = async () => {
       if (token) {
         try {
-          const response = await fetch('http://localhost:8001/me', {
+          const response = await fetch(`${API_URL}/me`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -39,7 +41,7 @@ export function AuthProvider({ children }) {
     formData.append('username', email);
     formData.append('password', password);
 
-    const response = await fetch('http://localhost:8001/token', {
+    const response = await fetch(`${API_URL}/token`, {
       method: 'POST',
       body: formData,
     });
@@ -60,7 +62,7 @@ export function AuthProvider({ children }) {
   };
 
   const signup = async (userData) => {
-    const response = await fetch('http://localhost:8001/signup', {
+    const response = await fetch(`${API_URL}/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, BrainCircuit, CheckCircle, Clock, Search, FileText, Briefcase, X, Mail, Phone, Download, Trash2 } from 'lucide-react';
-import { useData } from '../context/DataContext';
+import { useData, API_URL } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 
 export default function HRJobApplications() {
@@ -23,7 +23,7 @@ export default function HRJobApplications() {
     setAnalyzingId(appId);
     
     try {
-      const response = await fetch('http://localhost:8001/analyze-cv', {
+      const response = await fetch(`${API_URL}/analyze-cv`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
