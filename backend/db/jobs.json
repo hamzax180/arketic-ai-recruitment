@@ -1,0 +1,55 @@
+[
+    {
+        "title": "police",
+        "department": "police school academy",
+        "location": "hybird",
+        "type": "Full-time",
+        "description": "fightwe",
+        "requirements": [
+            "1 year"
+        ],
+        "id": "1773482785636",
+        "postedAt": "Just now"
+    },
+    {
+        "id": "1",
+        "title": "Senior DevOps Engineer",
+        "department": "Cloud",
+        "location": "Remote",
+        "type": "Full-time",
+        "description": "Help us scale our AI infrastructure.",
+        "requirements": [
+            "AWS",
+            "Kubernetes",
+            "Terraform"
+        ],
+        "postedAt": "1 day ago"
+    },
+    {
+        "id": "2",
+        "title": "Frontend Developer (React)",
+        "department": "Engineering",
+        "location": "New York, NY",
+        "type": "Full-time",
+        "description": "Build beautiful, responsive interfaces.",
+        "requirements": [
+            "React",
+            "CSS",
+            "TypeScript"
+        ],
+        "postedAt": "2 days ago"
+    },
+    {
+        "id": "3",
+        "title": "Product Designer",
+        "department": "Design",
+        "location": "London, UK",
+        "type": "Contract",
+        "description": "Shape our product vision.",
+        "requirements": [
+            "Figma",
+            "Design Systems"
+        ],
+        "postedAt": "3 days ago"
+    }
+]

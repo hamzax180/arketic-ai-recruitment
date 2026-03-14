@@ -1,0 +1,21 @@
+{
+    "admin@arketic.ai": {
+        "email": "admin@arketic.ai",
+        "name": "Admin User",
+        "disabled": false,
+        "hashed_password": "$2b$12$dIJq7T61Tz31qMURbMhR6OyEFX94YhzSXxAQ3bobNeUgJ9z2VBPXO",
+        "role": "admin"
+    },
+    "hamza@test.com": {
+        "email": "hamza@test.com",
+        "name": "hamza",
+        "role": "client",
+        "hashed_password": "$2b$12$rys65b7YshncH.2VFXUoyer3tc31IKbBQWzfIMpEuaSM.ihvhed8m"
+    },
+    "hamzadmin@test.com": {
+        "email": "hamzadmin@test.com",
+        "name": "hamza admin",
+        "role": "admin",
+        "hashed_password": "$2b$12$H91DCedk.vetHbQSp8K4ZOt1wGUNEeW0TWSUvlCS0g48K7i.9hJWq"
+    }
+}
