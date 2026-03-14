@@ -52,7 +52,13 @@ app.add_middleware(
 
 # --- Persistence Helpers ---
 IS_VERCEL = os.getenv("VERCEL") == "1"
+# Robust path discovery
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Fallback search if BASE_DIR/db doesn't exist (helpful in some serverless envs)
+if not os.path.exists(os.path.join(BASE_DIR, "db")) and os.path.exists(os.path.join(os.getcwd(), "backend", "db")):
+    BASE_DIR = os.path.join(os.getcwd(), "backend")
+elif not os.path.exists(os.path.join(BASE_DIR, "db")) and os.path.exists(os.path.join(os.getcwd(), "db")):
+    BASE_DIR = os.getcwd()
 
 if IS_VERCEL:
     DB_DIR = "/tmp/db"
@@ -282,6 +288,18 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 # --- Endpoints ---
+@app.get("/api/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "is_vercel": IS_VERCEL,
+        "base_dir": BASE_DIR,
+        "db_dir": DB_DIR,
+        "db_exists": os.path.exists(DB_DIR),
+        "jobs_source_exists": os.path.exists(os.path.join(BASE_DIR, "db", "jobs.json")),
+        "db_files": os.listdir(DB_DIR) if os.path.exists(DB_DIR) else []
+    }
+
 @app.get("/api/jobs", response_model=List[Job])
 async def get_jobs():
     return jobs_db
