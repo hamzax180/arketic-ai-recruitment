@@ -1,0 +1,8 @@
+[
+    {
+        "email": "testadmin@arketic.ai",
+        "name": "Test Admin",
+        "role": "admin",
+        "hashed_password": "$2b$12$/AuMX0KHKOpzLBsG0mvjOuObeVAT2f2vZQenWZZ1Yovp.8Q/7zjY6"
+    }
+]

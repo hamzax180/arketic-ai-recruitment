@@ -17,5 +17,11 @@
         "name": "hamza admin",
         "role": "admin",
         "hashed_password": "$2b$12$H91DCedk.vetHbQSp8K4ZOt1wGUNEeW0TWSUvlCS0g48K7i.9hJWq"
+    },
+    "mohamed@test.com": {
+        "email": "mohamed@test.com",
+        "name": "mohamed",
+        "role": "client",
+        "hashed_password": "$2b$12$9yQFzA9PHOvkSax8TEpGaeUrhcPfirEI6JleQiY3fkaaMz.AhWZvu"
     }
 }
