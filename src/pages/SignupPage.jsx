@@ -90,33 +90,7 @@ export default function SignupPage() {
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Account Type</label>
-            <div className="flex gap-4">
-              <button 
-                type="button"
-                className="flex-1 flex items-center justify-center gap-2 p-3 glass-panel"
-                style={{ 
-                  borderColor: formData.role === 'client' ? 'var(--primary)' : 'var(--border)',
-                  background: formData.role === 'client' ? 'var(--primary-glow)' : 'transparent'
-                }}
-                onClick={() => setFormData({...formData, role: 'client'})}
-              >
-                <User size={16} /> Candidate
-              </button>
-              <button 
-                type="button"
-                className="flex-1 flex items-center justify-center gap-2 p-3 glass-panel"
-                style={{ 
-                  borderColor: formData.role === 'admin' ? 'var(--secondary)' : 'var(--border)',
-                  background: formData.role === 'admin' ? 'var(--secondary-glow)' : 'transparent'
-                }}
-                onClick={() => setFormData({...formData, role: 'admin'})}
-              >
-                <ShieldCheck size={16} /> Admin
-              </button>
-            </div>
-          </div>
+{/* Account Type hidden - Admin creation moved to terminal for security */}
 
           {error && <p style={{ color: 'var(--error)', fontSize: '0.9rem' }}>{error}</p>}
 

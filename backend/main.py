@@ -50,9 +50,16 @@ app.add_middleware(
 )
 
 # --- Persistence Helpers ---
+IS_VERCEL = os.getenv("VERCEL") == "1"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_DIR = os.path.join(BASE_DIR, "db")
-UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+
+if IS_VERCEL:
+    DB_DIR = "/tmp/db"
+    UPLOAD_DIR = "/tmp/uploads"
+else:
+    DB_DIR = os.path.join(BASE_DIR, "db")
+    UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+
 if not os.path.exists(DB_DIR):
     os.makedirs(DB_DIR)
 if not os.path.exists(UPLOAD_DIR):
@@ -60,12 +67,26 @@ if not os.path.exists(UPLOAD_DIR):
 
 def load_db(filename, default_value):
     path = os.path.join(DB_DIR, filename)
+    source_path = os.path.join(BASE_DIR, "db", filename)
+    
+    # On Vercel, if DB doesn't exist in /tmp, copy it from the bundle
+    if IS_VERCEL and not os.path.exists(path) and os.path.exists(source_path):
+        try:
+            with open(source_path, "r") as f:
+                data = json.load(f)
+            with open(path, "w") as f:
+                json.dump(data, f)
+        except:
+            pass
+
     if os.path.exists(path):
         try:
             with open(path, "r") as f:
                 return json.load(f)
         except Exception as e:
             print(f"Error loading {filename}: {e}")
+            return default_value
+    
     # If file doesn't exist, save the default value immediately
     save_db(filename, default_value)
     return default_value
