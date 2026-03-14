@@ -31,9 +31,34 @@
 ## 🛠️ Tech Stack
 
 - **Frontend**: React (Vite), TailwindCSS, Lucide Icons, Glassmorphism CSS.
-- **Backend**: FastAPI (Python), OAuth2 with JWT, Uvicorn.
-- **AI Engine**: Google Gemini (generativeai) for structured CV breakdown.
-- **Database**: Lightweight JSON-based persistence (Scalable architecture).
+- **Backend**: FastAPI (Python), OAuth2 with JWT, Mangum (Vercel Support).
+- **AI Engine**: Google Gemini (generativeai) with Smart Simulation Fallback.
+- **Database**: JSON-based Persistence with Vercel `/tmp` synchronization.
+
+---
+
+## 🏗️ System Architecture
+
+### Frontend Design
+The frontend is a **React Single Page Application (SPA)** optimized for a premium, high-performance experience.
+- **Design Philosophy**: Core "Glassmorphism" aesthetic with `backdrop-filter` blurs and premium gradients.
+- **State Management**: Zero-dependency state management using React Context API for Auth and Data synchronization.
+- **Role-Based Routing**: Hardened navigation that blocks non-admin users from accessing recruitment dashboards.
+
+### Backend & AI Infrastructure
+The backend is a **FastAPI** microservice wrapped with **Mangum** for seamless serverless deployment.
+- **CV Matching Algorithm**: Uses a **Role Proximity Model** that weights candidate "Identity" (e.g., Software Engineer title) and industry-specific keywords.
+- **AI Scoring Logic**: 
+    - **Conversational Summaries**: Generates human-like "Why this rating?" narratives instead of dry bullet points.
+    - **Smart Fallback**: If AI services are unavailable, the system automatically switches to an internal proximity-based scoring engine to ensure zero downtime.
+- **Persistence Strategy**: Implements a robust JSON-to-Cloud synchronization logic, specifically designed to handle Vercel's read-only filesystem by leveraging `/tmp` for runtime operations.
+
+---
+
+## 🛡️ Admin Security & Access
+For maximum security, admin account creation has been decoupled from the public signup flow:
+- **Terminal Only**: Admin accounts can **only** be created via the secure terminal script: `python backend/scripts/create_admin.py`.
+- **RBAC**: Every sensitive endpoint is protected by JWT-based Role-Based Access Control.
 
 ---
 
