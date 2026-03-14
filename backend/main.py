@@ -365,14 +365,20 @@ async def delete_job(job_id: str, current_user: dict = Depends(get_current_user)
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
     
-    global jobs_db
+    global jobs_db, applications_db
     job_exists = any(j["id"] == job_id for j in jobs_db)
     if not job_exists:
         raise HTTPException(status_code=404, detail="Job not found")
     
+    # Remove the job
     jobs_db = [j for j in jobs_db if j["id"] != job_id]
     save_db("jobs.json", jobs_db)
-    return {"message": "Job deleted successfully"}
+    
+    # Cascading delete: Remove all applications for this job
+    applications_db = [a for a in applications_db if a.get("jobId") != job_id]
+    save_db("applications.json", applications_db)
+    
+    return {"message": "Job and associated applications deleted successfully"}
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):

@@ -139,7 +139,7 @@ export default function HRDashboard() {
                         <button 
                           onClick={async (e) => {
                             e.stopPropagation();
-                            if (window.confirm('Are you sure you want to delete this job posting? This will not remove applications but they will be linked to a missing job.')) {
+                            if (window.confirm('Are you sure you want to delete this job posting? This will also PERMANENTLY remove all associated applications.')) {
                               await deleteJob(job.id, token);
                             }
                           }}

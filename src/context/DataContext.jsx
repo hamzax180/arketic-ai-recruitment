@@ -142,6 +142,8 @@ export function DataProvider({ children }) {
       });
       if (response.ok) {
         setJobs(prev => prev.filter(job => job.id !== jobId));
+        // Cascading delete in local UI state
+        setApplications(prev => prev.filter(app => app.jobId !== jobId));
         return { success: true };
       }
       return { success: false };
