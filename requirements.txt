@@ -9,3 +9,4 @@ python-dotenv
 mangum
 PyPDF2
 python-docx
+bcrypt
