@@ -1,29 +1,52 @@
 {
   "version": 2,
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "destination": "/backend/main.py"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     },
     {
-      "source": "/token",
-      "destination": "/backend/main.py"
+      "src": "backend/main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/main.py"
     },
     {
-      "source": "/signup",
-      "destination": "/backend/main.py"
+      "src": "/token",
+      "dest": "backend/main.py"
     },
     {
-      "source": "/me",
-      "destination": "/backend/main.py"
+      "src": "/signup",
+      "dest": "backend/main.py"
     },
     {
-      "source": "/jobs",
-      "destination": "/backend/main.py"
+      "src": "/me",
+      "dest": "backend/main.py"
     },
     {
-      "source": "/analyze-cv",
-      "destination": "/backend/main.py"
+      "src": "/jobs",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/analyze-cv",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1",
+      "check": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/.*",
+      "dest": "/index.html"
     }
   ]
 }

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, status, File, UploadFile
+from fastapi import FastAPI, HTTPException, Depends, status, File, UploadFile, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
@@ -41,6 +41,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI(title="arketic.ai backend")
+api_router = APIRouter()
 
 app.add_middleware(
     CORSMiddleware,
@@ -284,11 +285,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 # --- Endpoints ---
-@app.get(f"{API_PREFIX}/jobs", response_model=List[Job])
+@api_router.get("/jobs", response_model=List[Job])
 async def get_jobs():
     return jobs_db
 
-@app.post(f"{API_PREFIX}/jobs", response_model=Job)
+@api_router.post("/jobs", response_model=Job)
 async def create_job(job: JobCreate, current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
@@ -302,13 +303,13 @@ async def create_job(job: JobCreate, current_user: dict = Depends(get_current_us
     save_db("jobs.json", jobs_db)
     return new_job
 
-@app.get(f"{API_PREFIX}/applications", response_model=List[Application])
+@api_router.get("/applications", response_model=List[Application])
 async def get_applications(current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
     return applications_db
 
-@app.post(f"{API_PREFIX}/upload")
+@api_router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     file_extension = os.path.splitext(file.filename)[1]
     unique_filename = f"{int(time.time() * 1000)}{file_extension}"
@@ -320,7 +321,7 @@ async def upload_file(file: UploadFile = File(...)):
         
     return {"url": f"/uploads/{unique_filename}", "filename": file.filename}
 
-@app.post(f"{API_PREFIX}/applications", response_model=Application)
+@api_router.post("/applications", response_model=Application)
 async def create_application(application: ApplicationBase):
     new_app = Application(
         **application.dict(),
@@ -332,7 +333,7 @@ async def create_application(application: ApplicationBase):
     save_db("applications.json", applications_db)
     return new_app
 
-@app.delete(f"{API_PREFIX}/applications/{{application_id}}")
+@api_router.delete("/applications/{application_id}")
 async def delete_application(application_id: str, current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
@@ -347,7 +348,7 @@ async def delete_application(application_id: str, current_user: dict = Depends(g
     save_db("applications.json", applications_db)
     return {"message": "Application deleted successfully"}
 
-@app.post(f"{API_PREFIX}/signup", response_model=UserBase)
+@api_router.post("/signup", response_model=UserBase)
 async def signup(user: UserCreate):
     if user.email in users_db:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -363,7 +364,7 @@ async def signup(user: UserCreate):
     save_db("users.json", users_db)
     return UserBase(**new_user)
 
-@app.delete(f"{API_PREFIX}/jobs/{{job_id}}")
+@api_router.delete("/jobs/{job_id}")
 async def delete_job(job_id: str, current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
@@ -383,7 +384,7 @@ async def delete_job(job_id: str, current_user: dict = Depends(get_current_user)
     
     return {"message": "Job and associated applications deleted successfully"}
 
-@app.post(f"{API_PREFIX}/token", response_model=Token)
+@api_router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = users_db.get(form_data.username)
     if not user or not verify_password(form_data.password, user["hashed_password"]):
@@ -399,7 +400,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.post(f"{API_PREFIX}/analyze-cv", response_model=AnalysisResponse)
+@api_router.post("/analyze-cv", response_model=AnalysisResponse)
 async def analyze_cv(request: AnalysisRequest, current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "admin":
          raise HTTPException(status_code=403, detail="Not enough permissions")
@@ -501,7 +502,7 @@ async def analyze_cv(request: AnalysisRequest, current_user: dict = Depends(get_
     if not current_model and GEMINI_API_KEY:
         try:
             genai.configure(api_key=GEMINI_API_KEY)
-            current_model = genai.GenerativeModel('gemini-3.1-flash-lite') 
+            current_model = genai.GenerativeModel('gemini-2.0-flash') 
         except:
              pass
 
@@ -569,9 +570,11 @@ async def analyze_cv(request: AnalysisRequest, current_user: dict = Depends(get_
     save_db("applications.json", applications_db)
     return AnalysisResponse(**result)
 
-@app.get(f"{API_PREFIX}/me", response_model=UserBase)
+@api_router.get("/me", response_model=UserBase)
 async def read_users_me(current_user: dict = Depends(get_current_user)):
     return UserBase(**current_user)
+
+app.include_router(api_router, prefix=API_PREFIX)
 
 if __name__ == "__main__":
     import uvicorn
