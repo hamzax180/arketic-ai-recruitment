@@ -115,7 +115,7 @@ export function DataProvider({ children }) {
 
   const deleteApplication = async (applicationId, token) => {
     try {
-      const response = await fetch(`http://localhost:8001/applications/${applicationId}`, {
+      const response = await fetch(`${API_URL}/applications/${applicationId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -132,6 +132,25 @@ export function DataProvider({ children }) {
     }
   };
 
+  const deleteJob = async (jobId, token) => {
+    try {
+      const response = await fetch(`${API_URL}/jobs/${jobId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        setJobs(prev => prev.filter(job => job.id !== jobId));
+        return { success: true };
+      }
+      return { success: false };
+    } catch (error) {
+      console.error('Error deleting job:', error);
+      return { success: false };
+    }
+  };
+
   return (
     <DataContext.Provider value={{ 
       jobs, 
@@ -143,6 +162,7 @@ export function DataProvider({ children }) {
       uploadCV,
       updateApplicationAI,
       deleteApplication,
+      deleteJob,
       loading
     }}>
       {children}

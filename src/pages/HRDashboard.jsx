@@ -17,7 +17,7 @@ import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 
 export default function HRDashboard() {
-  const { jobs, applications, addJob, deleteApplication } = useData();
+  const { jobs, applications, addJob, deleteApplication, deleteJob } = useData();
   const { token } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCV, setSelectedCV] = useState(null);
@@ -130,11 +130,38 @@ export default function HRDashboard() {
                       </span>
                     </td>
                     <td style={{ padding: '16px 24px' }}>
-                      <Link to={`/hr/job/${job.id}/applications`}>
-                        <button className="btn btn-outline" style={{ padding: '6px 16px', fontSize: '0.9rem', borderRadius: 'var(--radius-sm)' }}>
-                          Review
+                      <div className="flex items-center gap-3">
+                        <Link to={`/hr/job/${job.id}/applications`}>
+                          <button className="btn btn-outline" style={{ padding: '6px 16px', fontSize: '0.9rem', borderRadius: 'var(--radius-sm)' }}>
+                            Review
+                          </button>
+                        </Link>
+                        <button 
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            if (window.confirm('Are you sure you want to delete this job posting? This will not remove applications but they will be linked to a missing job.')) {
+                              await deleteJob(job.id, token);
+                            }
+                          }}
+                          style={{
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            border: 'none',
+                            color: '#ef4444',
+                            padding: '6px',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+                          title="Delete Job Posting"
+                        >
+                          <Trash2 size={16} />
                         </button>
-                      </Link>
+                      </div>
                     </td>
                   </tr>
                 );

@@ -360,6 +360,20 @@ async def signup(user: UserCreate):
     save_db("users.json", users_db)
     return UserBase(**new_user)
 
+@app.delete("/jobs/{job_id}")
+async def delete_job(job_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+    
+    global jobs_db
+    job_exists = any(j["id"] == job_id for j in jobs_db)
+    if not job_exists:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    jobs_db = [j for j in jobs_db if j["id"] != job_id]
+    save_db("jobs.json", jobs_db)
+    return {"message": "Job deleted successfully"}
+
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = users_db.get(form_data.username)
